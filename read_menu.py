@@ -10,26 +10,35 @@ ASSIGNMENT 12A: THE CONFIGURABLE MENU & AUDITOR
 [ ] 7. try/except used to prevent crashes on FileNotFoundError.
 -----------------------------------------------------------------------
 """
+from pathlib import Path
+
+
 # This reads the external file and creates a dictionary of all the items within the menu
 
-def read_menu():
+def read_menu(file_path=None):
     menu = {}
+    source = Path(file_path) if file_path else Path(__file__).with_name("menu_config.txt")
 
     try:
-        with open("menu_config.txt", 'r') as file:
-
+        with source.open("r", encoding="utf-8") as file:
             for line in file:
-                parts = line.strip().split(",")
+                if not line.strip():
+                    continue
+                parts = [part.strip() for part in line.split(",")]
+                if len(parts) < 2 or not parts[0] or any(not item for item in parts[1:]):
+                    raise ValueError(f"Invalid menu entry: {line.rstrip()}")
 
                 category = parts[0]
                 details = parts[1:]
 
+                if category in menu:
+                    raise ValueError(f"Duplicate menu category: {category}")
                 menu[category] = details
 
         return menu
 
     except FileNotFoundError:
-        print("Error: menu_config.txt not found.")
+        print(f"Error: {source.name} not found.")
         return menu
 
 # This breaks the dictionary into individual variables, making it more coherent and structured
@@ -84,6 +93,5 @@ def main():
 
     print_menu(pizza_sizes, pizza_choices, pizza_types, sides, drinks)
 
-# This starts the program
-
-main()
+if __name__ == "__main__":
+    main()
