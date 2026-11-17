@@ -1,7 +1,0 @@
-Timestamp: 2026-11-16 22:12:42
-Phone number: 7795422883
-Size: Large
-Pizza: Pepperoni
-Crust: Thick Crust
-Drink: Water
-Side: Mozzarella Sticks
