@@ -11,74 +11,98 @@ This week: Define constants, create stubs, create menu
 from datetime import datetime
 
 ORDERS_FILE = "orders.txt"
+CUSTOMER_FILE = "customers.txt"
 
 PIZZA_SIZES = ("Small", "Medium", "Large", "Extra Large")
 PIZZA_CHOICES = ("Pepperoni", "Cheese", "Sausage", "Meat Lovers", "Veggie")
 PIZZA_TYPE = ("Thin Crust", "Thick Crust", "Chicago Style", "New York Style", "Detroit Style", "Stuffed Crust")
 DRINKS = ("Water", "Coke", "Dr. Pepper", "Lemonade", "Sweet Tea", "Beer")
-SIDES = ("5 Count Buffalo Wings", "5 Count BBQ Wings", "5 Count Hot Wings", "5 Count Garlic Parmesan Wings", "5 Count Lemon Pepper Wings", "Salt and Vinegar Chips", "Sour Cream and Onion Chips", "5 Count Mozzarella Sticks with Marinara")
-MENU = "menu.txt"
+SIDES = ("5 Count Hot Wings", "Jalapeno Chips", "Mozzarella Sticks ")
+MENU = "menu_config.txt"
 
 def login():
-    # gets login info
-    # returns login ID
-    # Gets the users information like their name
-        # will see if the user is already existing
-    print("Please login to your account")
-    employee_id = input("Please enter your login ID: ").strip()
-    return employee_id
-    # Have them text with ID and names, check if on it. If on it display name, number, extension to get them
+    customer_name = input("Please enter your name: ").strip()
+    phone_number = input("Please enter your phone number: ").strip()
+    try:
+        with open(CUSTOMER_FILE, "a", encoding="utf-8") as f:
+            f.write(f"{customer_name},{phone_number}\n")
+    except OSError as e:
+        print(f"Could not save customer info: {e}")
+        return None
 
-def past_orders(employee):
-    # check for and display most recent 5 orders if there are any, ask if they want to reorder give them the menu
-    # return number of past order or 6 if they went to create a new order
+    return {"customer_name": customer_name, "phone_number": phone_number}
+# Gets the users information like their name and number
+
+def past_orders(customer):
+    try:
+        with open(ORDERS_FILE, "r", encoding="utf-8") as file:
+            lines = file.read().strip().splitlines()
+
+        if not lines:
+            print("No past orders found.")
+            return None
+
+        print("\nRecent orders:")
+        for line in lines[-10:]:
+            print(line)
+
+        return 1
+
+    except FileNotFoundError:
+        print("No past orders found.")
     return None
 
-def new_order(employee):
-    print(f"Pizza Sizes: {PIZZA_SIZES}")
-    size = input("Choose a size: ").title().strip()
+def new_order(customer):
+    print("\n--------PIZZA MENU--------")
+    print("Sizes:", PIZZA_SIZES)
+    print("Pizzas:", PIZZA_CHOICES)
+    print("Crusts:", PIZZA_TYPE)
+    print("Drinks:", DRINKS)
+    print("Sides:", SIDES)
 
-    print(f"Pizza choices: {PIZZA_CHOICES}")
-    pizza = input("Choose a pizza: ").title().strip()
-
-    print(f"Crust types: {PIZZA_TYPE}")
-    pizza_type = input("Choose a crust: ").title().strip()
-
-    print(f"Drinks: {DRINKS}")
-    drink = input("Choose a drink: ").title().strip()
-
-    print(f"Sides: {SIDES}")
-    side = input("Choose a side: ").title().strip()
-
-    order = [employee, size, pizza, pizza_type, drink, side]
+    order = {"customer_name": customer["customer_name"], "phone_number": customer["phone_number"], "size": input("Choose a size: ").title().strip(), "pizza": input("Choose a pizza: ").title().strip(), "crust": input("Choose a crust: ").title().strip(), "drink": input("Choose a drink: ").title().strip(), "side": input("Choose a side: ").title().strip()
+        }
     return order
 
 def verify(order):
     print("\nPlease verify that your order is correct to your choosing:")
-    print(f"Size: {order[1]}")
-    print(f"Pizza: {order[2]}")
-    print(f"Crust: {order[3]}")
-    print(f"Drink: {order[4]}")
-    print(f"Side: {order[5]}")
+    print(f"Size: {order['size']}")
+    print(f"Pizza: {order['pizza']}")
+    print(f"Crust: {order['crust']}")
+    print(f"Drink: {order['drink']}")
+    print(f"Side: {order['side']}")
 
     answer = input("Is your order correct? (Y/N): ").strip().lower()
     return answer == "y"
+# verifies if your order is correct to your liking, if not you are able to edit something of your choosing
 
 def save_order(order):
-    record = {
-        "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "Employee ID": order[0],
-        "Size": order[1],
-        "Pizza": order[2],
-        "Crust": order[3],
-        "Drink": order[4],
-        "Side": order[5],
-    }
+    record = {"Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "Customer": order["customer_name"], "Phone number": order["phone_number"], "Size": order["size"], "Pizza": order["pizza"], "Crust": order["crust"], "Drink": order["drink"], "Side": order["side"],}
 
     with open(ORDERS_FILE, "a", encoding="utf-8") as file:
         for label, value in record.items():
             file.write(f"{label}: {value}\n")
         file.write("\n")
+
+def delete_order(customer_name):
+    try:
+        with open(ORDERS_FILE, "r", encoding="utf-8") as file:
+            lines = file.read().splitlines()
+
+        remaining = []
+        for line in lines:
+            if customer_name not in line:
+                remaining.append(line)
+
+        with open(ORDERS_FILE, "w", encoding="utf-8") as file:
+            file.write("\n".join(remaining))
+
+        print(f"Deleted an past orders for, {customer_name}.")
+
+    except FileNotFoundError:
+        print("No past orders found to delete")
+    except OSError as e:
+        print(f"Could not delete order: {e}")
 
 def change_order(order):
     print("\nWhat would you like to change from your order?")
@@ -92,44 +116,53 @@ def change_order(order):
 
     if choice == "1":
         print(PIZZA_SIZES)
-        order[1] = input("Choose a pizza size: ").title().strip()
+        order["size"] = input("Choose a pizza size: ").title().strip()
     elif choice == "2":
         print(PIZZA_CHOICES)
-        order[2] = input("Choose a pizza type: ").title().strip()
+        order["pizza"] = input("Choose a pizza type: ").title().strip()
     elif choice == "3":
         print(PIZZA_TYPE)
-        order[3] = input("Choose a crust: ").title().strip()
+        order["crust"] = input("Choose a crust: ").title().strip()
     elif choice == "4":
         print(DRINKS)
-        order[4] = input("Choose a drink: ").title().strip()
+        order["drink"] = input("Choose a drink: ").title().strip()
     elif choice == "5":
         print(SIDES)
-        order[5] = input("Choose a side: ").title().strip()
+        order["side"] = input("Choose a side: ").title().strip()
     else:
         print("That choice wasn't recognized.")
 
     return order
     # display numbered parts of order allow them to change
 
+from customers import login
+from orders import (new_order, verify, change_order, save_order, order_receipt, delete_order,)
+
 def order_receipt(order):
-    print("---------YOUR PIZZA ORDER RECEIPT---------")
-    print(f"Employee ID: {order[0]}")
-    print(f"Pizza Size: {order[1]}")
-    print(f"Pizza Type: {order[2]}")
-    print(f"Crust: {order[3]}")
-    print(f"Drink: {order[4]}")
-    print(f"Side: {order[5]}")
+    print("\n---------YOUR PIZZA ORDER RECEIPT---------")
+    print(f"Customer Name: {order['customer_name']}")
+    print(f"Phone Number: {order['phone_number']}")
+    print(f"Pizza Size: {order['size']}")
+    print(f"Pizza Type: {order['pizza']}")
+    print(f"Crust: {order['crust']}")
+    print(f"Drink: {order['drink']}")
+    print(f"Side: {order['side']}")
     print("---------------------------")
     print("Thank you for ordering from us, enjoy the food and come back again!")
     # Display final order
 
 def main():
-    employee_id = login()
-    order = past_orders(employee_id)
-    if order is None:
-        order = new_order(employee_id)
-    while not verify(order):
-        order = change_order(order)
+        customer = login()
+        order = new_order(customer)
+while not verify(order):
+    order = change_order(order)
     save_order(order)
     order_receipt(order)
-main()
+
+choice_delete = input("Do you want to delete an old, past order? (Y/N)").strip().lower()
+if choice_delete == "y":
+    customer_name = input("Enter your name to remove past order(s): ").strip()
+    delete_order(customer_name)
+
+if __name__ == "__main__":
+    main()

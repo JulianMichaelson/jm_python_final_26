@@ -1,5 +1,0 @@
-PIZZA SIZE,Small,Medium,Large,Extra Large
-PIZZA CHOICE,Pepperoni,Cheese,Sausage,Meat Lovers,Veggie
-PIZZA TYPE,Thin Crust,Thick Crust,Chicago Style,New York Style,Detroit Style,Stuffed Crust
-SIDE,5 Count Buffalo Wings,5 Count BBQ Wings,5 Count Hot Wings,5 Count Garlic Parmesan Wings,5 Count Lemon Pepper Wings,Salt and Vinegar Chips,Sour Cream and Onion Chips,5 Count Mozzarella Sticks with Marinara
-DRINK,Water,Coke,Dr. Pepper,Lemonade,Sweet Tea,Beer

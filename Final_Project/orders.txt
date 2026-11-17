@@ -1,0 +1,9 @@
+Timestamp: 2026-11-16 21:44:01
+Customer: Julian
+Phone number: 7797041461
+Size: Large
+Pizza: Meat Lovers
+Crust: Stuffed Crust
+Drink: Beer
+Side: Jalapeno Chips
+
