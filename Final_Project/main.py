@@ -21,7 +21,6 @@ def main():
         return
 
     order = new_order(customer)
-
     while not verify(order):
         order = change_order(order)
 
@@ -31,13 +30,11 @@ def main():
     choice_delete = input(
         "Do you want to delete an old order? (Y/N): "
     ).strip().lower()
-
     if choice_delete == "y":
         customer_name = input(
             "Enter your name to remove past orders: "
         ).strip()
         delete_order(customer_name)
-
 
 if __name__ == "__main__":
     main()

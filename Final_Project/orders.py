@@ -111,7 +111,6 @@ def change_order(order):
     # display numbered parts of order allow them to change
 
 from customers import login
-from orders import (new_order, verify, change_order, save_order, order_receipt, delete_order,)
 
 def order_receipt(order):
     print("\n---------YOUR PIZZA ORDER RECEIPT---------")

@@ -7,3 +7,12 @@ Crust: Stuffed Crust
 Drink: Beer
 Side: Jalapeno Chips
 
+Timestamp: 2026-11-16 23:53:07
+Customer: julian
+Phone number: 63434343
+Size: Large
+Pizza: Pepperroni
+Crust: Thick Crust
+Drink: Water
+Side: Mozzarella Sticks
+
