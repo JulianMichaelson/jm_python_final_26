@@ -1,0 +1,9 @@
+Timestamp: 2026-11-23 10:41:18
+Customer: Julian
+Phone number: 1111111111
+Size: Small
+Pizza: Cheese
+Crust: Thin Crust
+Drink: Water
+Side: 5 Count Hot Wings
+
